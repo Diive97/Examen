@@ -91,3 +91,43 @@ export const deleteUsuario = async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar el usuario' });
     }
 };
+
+export const login = async (req, res) => {
+    try {
+        const { user, password } = req.body;
+
+        if (!user) {
+            return res.status(400).json({
+                Mensaje: "Error: El usuario es requerido",
+                cantidad: 0,
+                data: [],
+                color: "danger",
+            });
+        }
+
+        if (!password) {
+            return res.status(400).json({
+                Mensaje: "Error: La contraseña es requerida",
+                cantidad: 0,
+                data: [],
+                color: "danger",
+            });
+        }
+
+        const [result] = await conmysql.query(
+            SELECT * FROM usuario WHERE usuario = ? AND clave = ?;,
+            [user, password]
+        );
+
+        res.json({
+            Mensaje: result.length > 0
+                ? "Inicio de sesión exitoso"
+                : "Credenciales incorrectas",
+            cantidad: result.length,
+            data: result,
+            color: result.length > 0 ? "success" : "danger",
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
