@@ -115,9 +115,10 @@ export const login = async (req, res) => {
         }
 
         const [result] = await conmysql.query(
-            SELECT * FROM usuario WHERE usuario = ? AND clave = ?;,
+            'SELECT * FROM usuario WHERE usuario = ? AND clave = ?',
             [user, password]
         );
+        
 
         res.json({
             Mensaje: result.length > 0
